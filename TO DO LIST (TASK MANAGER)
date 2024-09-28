@@ -1,0 +1,110 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+struct Task {
+    std::string description;
+    bool isCompleted;
+};
+
+void displayMenu() {
+    std::cout << "\nTo-Do List Manager" << std::endl;
+    std::cout << "1. View Tasks" << std::endl;
+    std::cout << "2. Add Task" << std::endl;
+    std::cout << "3. Mark Task as Completed" << std::endl;
+    std::cout << "4. Remove Task" << std::endl;
+    std::cout << "5. Exit" << std::endl;
+    std::cout << "Choose an option: ";
+}
+
+void viewTasks(const std::vector<Task>& tasks) {
+    if (tasks.empty()) {
+        std::cout << "Your task list is empty." << std::endl;
+    } else {
+        std::cout << "\nYour Tasks:" << std::endl;
+        for (size_t i = 0; i < tasks.size(); ++i) {
+            std::cout << i + 1 << ". " << tasks[i].description 
+                      << " [" << (tasks[i].isCompleted ? "Completed" : "Pending") << "]" 
+                      << std::endl;
+        }
+    }
+}
+
+void addTask(std::vector<Task>& tasks) {
+    std::cin.ignore();  // To clear the newline left in the input buffer
+    Task newTask;
+    std::cout << "Enter the new task: ";
+    std::getline(std::cin, newTask.description);
+    newTask.isCompleted = false;
+    tasks.push_back(newTask);
+    std::cout << "Task added successfully!" << std::endl;
+}
+
+void markTaskAsCompleted(std::vector<Task>& tasks) {
+    if (tasks.empty()) {
+        std::cout << "No tasks to mark as completed." << std::endl;
+        return;
+    }
+    viewTasks(tasks);
+    int taskNumber;
+    std::cout << "Enter the task number to mark as completed: ";
+    std::cin >> taskNumber;
+
+    if (taskNumber > 0 && taskNumber <= tasks.size()) {
+        tasks[taskNumber - 1].isCompleted = true;
+        std::cout << "Task marked as completed!" << std::endl;
+    } else {
+        std::cout << "Invalid task number!" << std::endl;
+    }
+}
+
+void removeTask(std::vector<Task>& tasks) {
+    if (tasks.empty()) {
+        std::cout << "No tasks to remove." << std::endl;
+        return;
+    }
+    viewTasks(tasks);
+    int taskNumber;
+    std::cout << "Enter the task number to remove: ";
+    std::cin >> taskNumber;
+
+    if (taskNumber > 0 && taskNumber <= tasks.size()) {
+        tasks.erase(tasks.begin() + taskNumber - 1);
+        std::cout << "Task removed successfully!" << std::endl;
+    } else {
+        std::cout << "Invalid task number!" << std::endl;
+    }
+}
+
+int main() {
+    std::vector<Task> tasks;
+    int choice;
+
+    do {
+        displayMenu();
+        std::cin >> choice;
+
+        switch (choice) {
+            case 1:
+                viewTasks(tasks);
+                break;
+            case 2:
+                addTask(tasks);
+                break;
+            case 3:
+                markTaskAsCompleted(tasks);
+                break;
+            case 4:
+                removeTask(tasks);
+                break;
+            case 5:
+                std::cout << "Exiting the program. Goodbye!" << std::endl;
+                break;
+            default:
+                std::cout << "Invalid option! Please try again." << std::endl;
+                break;
+        }
+    } while (choice != 5);
+
+    return 0;
+}
